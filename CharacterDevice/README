@@ -1,0 +1,11 @@
+1. make
+2. sudo insmod cha_dev_example.ko
+3. sudo ./char_dev_test # enter text and see it coming back with number of characters counted
+4. sudo rmmod cha_dev_example.ko
+
+# make /dev/char_dev_example accessible to non-super users, so no "sudo" for ./test is needed:
+5. udevadm info -a -p /sys/class/char_dev_example/char_dev_example # see for KERNEL and SUBSYSTEM values
+6. sudo vim /etc/udev/rules.d/99-char_dev_example.rules # put: KERNEL=="char_dev_example", SUBSYSTEM=="char_dev_example", MODE="0666"
+7. sudo insmod cha_dev_example.ko
+8. ll /etc/char_dev_example # now the device should be "crw-rw-rw- (...) /dev/char_dev_example" 
+9. ./char_dev_test # now the test application works without "sudo"
