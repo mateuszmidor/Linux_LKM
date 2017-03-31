@@ -30,6 +30,10 @@
 								<option id="gnu.c.compiler.option.include.paths.1480245077" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="/usr/src/linux-4.8/include"/>
 								</option>
+								<option id="gnu.c.compiler.option.preprocessor.def.symbols.218277887" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
+									<listOptionValue builtIn="false" value="MODULE=1"/>
+									<listOptionValue builtIn="false" value="__KERNEL__=1"/>
+								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1744667092" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1661808582" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug">
