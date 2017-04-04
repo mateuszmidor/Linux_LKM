@@ -1,5 +1,0 @@
-1. make
-2. sudo insmod linkedlist.ko
-3. dmesg # see list items printed out
-4. sudo rmmod linkedlist.ko
-6. modinfo linkedlist.ko # read module metadata
