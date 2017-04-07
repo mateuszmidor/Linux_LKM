@@ -9,9 +9,12 @@
 #define COMMON_H_
 
 #ifdef __KERNEL__
+// for firewall kernel module
 #include <linux/kernel.h>
 #include <linux/string.h>
 #else
+// for firewall userspace client
+#include <cstdio>
 #include <string.h>
 #endif
 
@@ -89,7 +92,7 @@ unsigned int ip_str_to_hl(char *ip_str) {
  * @param	rule_string "protocol direction action srcip srcmask srcport dstip dstmask dstport"
  * @return	True o successful deserialization, False otherwise
  */
-bool deserialize_rule(char* rule_string, firewall_rule *out_rule) {
+bool deserialize_rule(const char* rule_string, firewall_rule *out_rule) {
 
 	char protocol[15] = {'\0'};		// tcp/udp/all
 	char direction[15] = {'\0'};	// in/out
@@ -116,7 +119,7 @@ bool deserialize_rule(char* rule_string, firewall_rule *out_rule) {
 		return false;
 
 	#define CHECK_OP(op1, op2) ((strcmp(op1, op2) == 0))
-	out_rule->proto = CHECK_OP(protocol, "tcp") ? PROTOCOL_TCP : CHECK_OP(protocol, "ucp") ? PROTOCOL_UDP : PROTOCOL_ALL;
+	out_rule->proto = CHECK_OP(protocol, "tcp") ? PROTOCOL_TCP : CHECK_OP(protocol, "udp") ? PROTOCOL_UDP : PROTOCOL_ALL;
 	out_rule->in_out = CHECK_OP(direction, "in") ? DIRECTION_INCOMING : CHECK_OP(direction, "out") ? DIRECTION_OUTGOING : DIRECTION_NONE;
 	out_rule->action = CHECK_OP(action, "block") ? ACTION_BLOCK : ACTION_UNBLOCK;
 	out_rule->src_ip = ip_str_to_hl(src_ip);
