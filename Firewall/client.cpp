@@ -12,6 +12,10 @@
 
 using namespace std;
 
+/**
+ * @name	cut_token
+ * @brief	Cut and return single token from src string (tokens are separated by spaces)
+ */
 string cut_token(string &src) {
 	char head[25] = {'\0'};
 	char tail[100] = {'\0'};
@@ -21,6 +25,10 @@ string cut_token(string &src) {
 	return head;
 }
 
+/**
+ * @name	get_module_stream
+ * @brief	Open and return a read-write file stream to firewall communication file
+ */
 fstream get_module_stream() {
 	const string COMMUNICATION_FILEPATH = "/proc/" PROCFS_FILENAME;
 	fstream stream(COMMUNICATION_FILEPATH);
@@ -31,42 +39,66 @@ fstream get_module_stream() {
 	return stream;
 }
 
+/**
+ * @name	print_firewall_rules
+ * @brief	Print all currently active firewall rules to stdout
+ */
 void print_firewall_rules() {
 	if (fstream stream = get_module_stream())
-		cout << stream.rdbuf();
+		if (stream.peek() != std::ifstream::traits_type::eof())
+			cout << stream.rdbuf();
+		else
+			cout << "[no rules]" << endl;
 }
 
-void add_firewall_rule(const string &line) {
+/**
+ * @name	add_firewall_rule
+ * @brief	Add fireall rule encoded as string to the firewall rule list
+ */
+void add_firewall_rule(const string &rule_string) {
 	firewall_rule tmp;
-	if (!deserialize_rule(line.c_str(), &tmp)) {
-		cout << "Firewall rule misformatted: " << line << endl;
+	if (!deserialize_rule(rule_string.c_str(), &tmp)) {
+		cout << "Firewall rule misformatted: " << rule_string << endl;
 		return;
 	}
 
 	if (fstream stream = get_module_stream())
-		stream << "add " << line;
+		stream << "add " << rule_string;
 }
 
-void del_firewall_rule(const string &line) {
-	unsigned int port;
-	if (sscanf(line.c_str(), "%u", &port) != 1) {
-		cout << "Port number misformatted: " << line << endl;
+/**
+ * @name	del_firewall_rule
+ * @brief	Delete firewall rule of given number given in rule_number_string
+ */
+void del_firewall_rule(const string &rule_number_string) {
+	unsigned int rule_number;
+	if (sscanf(rule_number_string.c_str(), "%u", &rule_number) != 1) {
+		cout << "Rule number misformatted: " << rule_number_string << endl;
 		return;
 	}
 
 	if (fstream stream = get_module_stream())
-		stream << "del " << port;
+		stream << "del " << rule_number;
 }
 
+/**
+ * @name	print_help
+ * @brief	Print available commands to stdout
+ */
 void print_help() {
 	cout << "Example commands:\n";
 	cout << "\texit\n";
 	cout << "\tprint\n";
-	cout << "\tadd tcp out block anyip anyip 0 anyip anyip 22\n";
+	cout << "\tadd tcp out block anyip anyip 0 anyip anyip 22 [block outgoing ssh packets]\n";
 	cout << "\tdel 2\n";
 	cout << endl;
 }
 
+/**
+ * @name	parse
+ * @brief	Parse single command line and execute command
+ * @return	True if valid command, False otherwise
+ */
 bool parse(string line) {
 	string cmd = cut_token(line);
 
@@ -84,6 +116,9 @@ bool parse(string line) {
 	return true;
 }
 
+/**
+ * Program entry point
+ */
 int main(int argc, char *argv[]) {
 	string line;
 
