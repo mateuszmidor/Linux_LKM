@@ -1,0 +1,6 @@
+1. make
+2. sudo insmod message_queue.ko
+3. dmesg --follow 
+4. sudo chmod 666 /dev/message_queue
+6. echo "poniedzialek" > /dev/message_queue
+7. cat /dev/message_queue
